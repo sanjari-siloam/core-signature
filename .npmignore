@@ -1,0 +1,9 @@
+src/
+test/
+*.md
+.gitignore
+.eslintrc
+.prettierrc
+tsconfig*.json
+jest*
+node_modules/
