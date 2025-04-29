@@ -1,3 +1,2 @@
-export * from './signature/signature.module';
-export * from './signature/signature.service';
-export * from './signature/signature.validate';
+export * from './signature';
+export * from './feature-flag';

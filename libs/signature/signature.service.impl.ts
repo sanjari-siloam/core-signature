@@ -70,7 +70,7 @@ export class SignatureServiceImpl extends SignatureService {
       try {
         let baseUrl: string | undefined =
           process.env.SIGNATURE_API_CORE_MANAGEMENT;
-        if (!baseUrl) baseUrl = 'http://localhost:3000';
+        if (!baseUrl) baseUrl = 'http://localhost:7750';
         response = await axios.get(`${baseUrl}/signature/verify/${publicKey}`);
         const data: ISignatureResponse | undefined = response.data?.data;
         cached = JSON.stringify(data);

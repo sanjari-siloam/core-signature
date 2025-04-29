@@ -16,10 +16,6 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false,
-    "paths": {
-      "core-signature": ["libs"],
-      "core-signature/*": ["libs/*"]
-    },
+    "noFallthroughCasesInSwitch": false
   }
 }
