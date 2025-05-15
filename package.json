@@ -1,6 +1,6 @@
 {
   "name": "core-signature",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "This package contains the nestjs modules required by the Signature Core Service",
   "author": "sanjari alfian <sanjari.alfian@nds.co.id>",
   "private": false,

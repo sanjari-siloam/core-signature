@@ -1,6 +1,6 @@
 export interface IContextFeatureFlag {
-  userID: any;
-  organizationId: number;
+  userID: string;
+  organization_id: number;
   [key: string]: any;
 }
 

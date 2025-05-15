@@ -11,6 +11,7 @@ import {
   FeatureFlagService,
   IContextFeatureFlag,
 } from './feature-flag.service';
+import * as process from 'node:process';
 
 global.fetch = jest.fn();
 
@@ -31,7 +32,7 @@ describe('FeatureFlagServiceImpl', () => {
   let mockFetch: jest.Mock;
   const defaultContext: IContextFeatureFlag = {
     userID: 'user123',
-    organizationId: 456,
+    organization_id: 456,
   };
   const defaultFlagName = 'isAwesomeFeatureEnabled';
   const defaultApiUrl = 'http://localhost:7750/v1/feature-flag/dso';
@@ -80,7 +81,8 @@ describe('FeatureFlagServiceImpl', () => {
         defaultFlagName,
         defaultContext,
       );
-      const differentContext = { userID: 'user456', organizationId: 789 };
+      const differentContext = { userID: 'user456', organization_id: 789 };
+      process.env.SECRET_KEY_HEIMDALL = 'another';
       const key3 = (service as unknown as FeatureFlagPrivate).generateCacheKey(
         defaultFlagName,
         differentContext,
@@ -95,6 +97,7 @@ describe('FeatureFlagServiceImpl', () => {
       expect(key1).not.toBe(key3);
       expect(key1).not.toBe(key4);
       expect(key1).toMatch(/^feature-flag:/);
+      process.env.SECRET_KEY_HEIMDALL = undefined;
     });
   });
 

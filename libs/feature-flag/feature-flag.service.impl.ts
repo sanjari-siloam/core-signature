@@ -6,6 +6,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { ConfigService } from '@nestjs/config';
+import * as process from 'node:process';
 
 export interface IDataFeatureFlag {
   flag: {
@@ -32,7 +33,8 @@ export class FeatureFlagServiceImpl extends FeatureFlagService {
   }
 
   private generateCacheKey(flag: string, ctx: IContextFeatureFlag): string {
-    return `feature-flag:${flag}:${ctx.userID}:${ctx.organizationId}`;
+    const secret_key: string | undefined = process.env.SECRET_KEY_HEIMDALL;
+    return `feature-flag:${flag}:${ctx.userID}:${ctx.organization_id}:${secret_key}`;
   }
 
   private async getFlag(

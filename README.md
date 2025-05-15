@@ -91,9 +91,9 @@ export class AppController {
 
   @Get('hello')
   async hello(): Promise<string> {
-    const ctx: IContextFeatureFlag = {
-      userID: 'user123',
-      organizationId: 456
+    const ctx: IContextFeatureFlag = { 
+      userID: 'user123', 
+      organization_id: 456
     }
     const isMyFeatureFlag: boolean = await this.featureFlagService.getStatusFlag(ctx, 'my-feature-flag');
     if (isMyFeatureFlag) return 'used feature flag';
@@ -117,7 +117,7 @@ import { IConfigFeatureFlag } from 'core-signature';
   
   const ctx: IContextFeatureFlag = {
     userID: 'user123',
-    organizationId: 456
+    organization_id: 456
   }
   const isMyFeatureFlag: boolean = await featureFlag.getStatusFlag(ctx, 'my-feature-flag');
   if (isMyFeatureFlag) console.log('used feature flag');

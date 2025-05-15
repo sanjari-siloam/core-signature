@@ -1,6 +1,7 @@
 import Redis from 'ioredis';
 import { IContextFeatureFlag } from './feature-flag.service';
 import { IDataFeatureFlag } from './feature-flag.service.impl';
+import * as process from 'node:process';
 
 export interface IConfigFeatureFlag {
   ttl?: number;
@@ -17,12 +18,13 @@ export class FeatureFlag {
     this.cacheTtlMs = options.ttl ?? 1000 * 60 * 30;
     this.coreUrl =
       options.coreUrl ??
-      process.env.CORE_URL ??
+      process.env.CORE_URL_FEATURE_FLAG ??
       'http://localhost:7750/v1/feature-flag/dso';
   }
 
   private generateCacheKey(flag: string, ctx: IContextFeatureFlag): string {
-    return `feature-flag:${flag}:${ctx.userID}:${ctx.organizationId}`;
+    const secret_key: string | undefined = process.env.SECRET_KEY_HEIMDALL;
+    return `feature-flag:${flag}:${ctx.userID}:${ctx.organization_id}:${secret_key}`;
   }
 
   private async getFlag(
@@ -42,7 +44,12 @@ export class FeatureFlag {
         'content-type': 'application/json; charset=utf-8',
       },
       body: JSON.stringify({
-        context: ctx,
+        context: {
+          context: ctx,
+          headers: {
+            secret_key: process.env.SECRET_KEY_HEIMDALL,
+          },
+        },
         flag_name: flag,
         default_value: defaultValue,
       }),

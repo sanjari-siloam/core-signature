@@ -2,6 +2,7 @@ import Redis from 'ioredis';
 import { FeatureFlag } from './feature-flag.classes';
 import { IDataFeatureFlag } from './feature-flag.service.impl';
 import { IContextFeatureFlag } from './feature-flag.service';
+import * as process from 'node:process';
 
 jest.mock('ioredis');
 global.fetch = jest.fn();
@@ -15,7 +16,7 @@ describe('FeatureFlagClasses', () => {
   let mockFetch: jest.Mock;
   const defaultContext: IContextFeatureFlag = {
     userID: 'user123',
-    organizationId: 456,
+    organization_id: 456,
   };
   const defaultFlagName = 'isAwesomeFeatureEnabled';
   const defaultApiUrl = 'http://localhost:7750/v1/feature-flag/dso';
@@ -45,6 +46,7 @@ describe('FeatureFlagClasses', () => {
         defaultContext,
       );
       const differentContext = { userID: 'user456', organizationId: 789 };
+      process.env.SECRET_KEY_HEIMDALL = 'another';
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
       const key3 = (featureFlag as any).generateCacheKey(
         defaultFlagName,
@@ -61,6 +63,7 @@ describe('FeatureFlagClasses', () => {
       expect(key1).not.toBe(key3);
       expect(key1).not.toBe(key4);
       expect(key1).toMatch(/^feature-flag:/);
+      process.env.SECRET_KEY_HEIMDALL = undefined;
     });
   });
 
@@ -100,7 +103,12 @@ describe('FeatureFlagClasses', () => {
         method: 'POST',
         headers: { 'content-type': 'application/json; charset=utf-8' },
         body: JSON.stringify({
-          context: defaultContext,
+          context: {
+            context: defaultContext,
+            headers: {
+              secret_key: 'undefined',
+            },
+          },
           flag_name: defaultFlagName,
           default_value: true,
         }),
@@ -173,7 +181,12 @@ describe('FeatureFlagClasses', () => {
         defaultApiUrl,
         expect.objectContaining({
           body: JSON.stringify({
-            context: defaultContext,
+            context: {
+              context: defaultContext,
+              headers: {
+                secret_key: 'undefined',
+              },
+            },
             flag_name: defaultFlagName,
             default_value: false,
           }),
